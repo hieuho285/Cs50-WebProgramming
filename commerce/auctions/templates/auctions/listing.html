@@ -1,0 +1,106 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col mb-2">
+                <p class="d-inline h1"> Listing: {{ listing.title }} </p> 
+                
+            </div>
+        </div>
+
+        <div class="row" >
+            <div class="col-5 text-center" style="height: 400px">    
+                {% if listing.image %}
+                    <img src="{{ listing.image }}"  class="image-fluid h-100 w-auto" >
+                {% else %}
+                    <input type="image" src="https://www.pacificfoodmachinery.com.au/media/catalog/productplaceholder/default/no-product-image-400x400.png"  class="image-fluid h-100 w-auto" >
+                {% endif %}
+            </div>
+            <div class="col-7">
+            {% if listing.isClosed is False %}                
+                <p class="h5 d-inline">Description:</p>
+                {% if listing.description %}
+                <p class="d-inline"> {{ listing.description }} </p>
+                {% else %}
+                <p class="d-inline"> No description.
+                {% endif %}
+                <p class="h5"> Detail:</p>
+                <ul>
+                    <li>Listed by: {{ listing.creator }}</li>
+                    <li>Category: {{ listing.category }}</li>
+                    <li>Created: {{ listing.created }}</li>
+                </ul>                
+                <div>
+                    {% if not listing.bid %}
+                        <p class="h5">Current price: $ {{ listing.startingBid }} </p>
+                    {% else %}
+                        <p class="h5">Current price: $ {{ listing.bid.bid }} </p>
+                    {% endif %}
+                </div>                                
+                {% if user.is_authenticated %}
+                {% if request.user.username is not listing.creator.username %}
+                <div>
+                    <form method="POST" action="{% url 'bid' listing.id %}">
+                        {% csrf_token %}
+                        {% if listing.bid.user is not None %}
+                        <label for="offer" class="small">{{ listing.bid.id }} bid(s) so far. Your bid is the current bid. Last bid is by {{listing.bid.user}} </label>
+                        {% else %}
+                        <label for="offer" class="small"> Let's make the first bid!</label>
+                        {% endif %}
+                        <input type="number" step="0.01" name="offer" class="form-control mb-1" placeholder="Bid <must be higher than currentpriceat least $1>">
+                        <input type="submit" class="btn btn-primary" value="Place Bid">
+                    </form>
+                </div>
+                <div class="mt-2">
+                    <form method="post" action="{% url 'listing' listing.id %}">
+                    {% csrf_token %}                        
+                    {% if request.user not in watchlist %}                    
+                        <button type="submit" class="btn btn-success">Add to watchlist</button>
+                    {% else %}
+                        <button type="submit" class="btn btn-danger">Remove from watchlist</button>
+                    {% endif %}                        
+                    </form>
+                
+                {% else %}
+                    <a href="{% url 'close' listing.id %}" class="btn btn-danger"> Close bid.</a>
+                {% endif %}                 
+                </div>
+                
+                {% else %}
+                    <a href="{% url 'login' %}">Sign in</a> to bid.                
+                {% endif %}            
+            {% else %}
+            {% if request.user not in Listing.winner %}
+                <p class="h1">This listing had winner!</p>
+                <a href="{% url 'index' %}">Return</a>
+            {% else %}
+                <p class="h1">You won this listing!</p>
+                <a href="{% url 'index' %}">Return</a>
+            {% endif %}
+            {% endif %}
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <form action="{% url 'comment' listing.id %}" method="POST" >
+                {% csrf_token %}
+                    <textarea class="form-control mb-1" placeholder="Add your comment here." name="comment"></textarea>
+                    <button type="submit" class="btn btn-info">Submit your comment.</button>
+                </form>
+                <p class="h3"> Comments </p>
+                {% if comments is not None %}
+                {% for comment in comments %}                
+                <label class="badge bg-success text-wrap" for="comments">{{ comment.user }}</label>
+                <input class="form-control" id="comments" type="text" value="{{ comment.comment }}" readonly>
+                {% endfor %}
+                {% else %}
+                <p class="h3"> No comment. </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock%}

@@ -1,0 +1,26 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% for listing in listings %}
+    <div class="container-fluid border rounded">
+        <div class="row" style="height: 200px">
+            <input type="hidden" name="id" value={{listing.id}}>
+            <div class="col-4 h-100 text-center d-inline-block">
+                {% if listing.image %}
+                    <a href="{% url 'listing' listing.id %}"><input type="image" src="{{listing.image}}"  class="image-fluid h-100 w-auto" ></a>
+                {% else %}
+                    <a href="{% url 'listing' listing.id %}"><input type="image" src="https://www.pacificfoodmachinery.com.au/media/catalog/productplaceholder/default/no-product-image-400x400.png"  class="image-fluid h-100 w-auto" ></a>
+                {% endif %}
+            </div>
+            <div class="col-8 h-100 d-inline-block flex-column">
+                <p class="h3"> {{ listing.title }} </p>
+                <p class="h3"> ${{ listing.startingBid }} </p>
+                <p class="small">Listed by: {{ listing.creator }}</p>
+                <p class="small">{{ listing.created }}</p>
+                <a href="{% url 'listing' listing.id %}"<button type="submit" class="btn btn-primary">Details</button></a>                       
+            </div>
+        </div>        
+    </div>
+    {% endfor %}
+    
+{% endblock %}

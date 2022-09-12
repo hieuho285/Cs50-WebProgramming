@@ -1,0 +1,73 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div class="container-fluid">
+
+        <div id="all-post-page">
+            {% if user.is_authenticated %}
+
+            <form id="new-post" class="row border rounded m-3">
+                <strong class="m-2 ml-3"> New Post</strong>
+                <textarea id="new-post-body" name="new-post-body" class="form-control mt-2 mr-4 ml-4 mb-1 w-100" autofocus></textarea>
+                <input id="new-post-submit" type="submit" class="ml-4 mb-3 btn btn-primary btn-sm" value="Post"/>
+            </form>
+
+            {% endif %} 
+                    
+        </div>
+
+        {% if user.is_authenticated %}
+        <div id="following-page">
+        </div>
+        {% endif %}
+
+        <div class="container text-center" id="profile">
+            <div class="row">
+                
+                <div class="col">
+                    <div class="card">
+                        <div class="p-4">
+                            <div>
+                                <div>
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="user" class="rounded-circle" width="100" />
+                                </div>
+                                <div class="pl-4" >
+                                    <h3>Daniel Kristeen</h3>
+                                    <h4>UIUX Designer</h4>
+                                    <div id="follow-button"></div>   
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="row mt-2">
+                                    
+                                    <div class="col border-right text-center">
+                                        <h2 class="font-light" id="follower"></h2>
+                                        <h4 class="text-uppercase">Follower</h4>
+                                    </div>
+                                    <div class="col text-center">
+                                        <h2 class="font-light" id="following"></h2>
+                                        <h4 class="text-uppercase">Following</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+                
+            </div>
+            <hr>       
+        </div>
+
+        <div id="user-post">
+        </div>
+
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
+{% endblock%}

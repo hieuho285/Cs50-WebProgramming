@@ -1,0 +1,44 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% for category in categories %}
+    <form method="POST" action="{% url 'category' %}">    
+        {% csrf_token %}
+        <input type="submit" class="btn btn-info h3" name="categories" value="{{category}}"> 
+    </form>
+    {% endfor %}
+
+    {% for listing in listings %}
+    
+    <div class="container-fluid border rounded">
+        <div class="row" style="height: 200px">
+            <div class="col-4 h-100 text-center d-inline-block">
+                {% if listing.image %}
+                    <a href="{% url 'listing' listing.id %}"><input type="image" src="{{listing.image}}"  class="image-fluid h-100 w-auto" ></a>
+                {% else %}
+                    <a href="{% url 'listing' listing.id %}"><input type="image" src="https://www.pacificfoodmachinery.com.au/media/catalog/product/placeholder/default/no-product-image-400x400.png"  class="image-fluid h-100 w-auto" ></a>
+                {% endif %}
+            </div>
+            <div class="col-8 h-100 d-inline-block ">
+                <p class="h5"> {{ listing.title }} </p>
+                
+                {% if not listing.bid %}
+                    <p class="h5">Current price: $ {{ listing.startingBid }} </p>
+                {% else %}
+                    <p class="h5">Current price: $ {{ listing.bid.bid }} </p>
+                {% endif %}
+                
+                <p class="small mb-0">Listed by: {{ listing.creator }}</p>
+                <p class="small mb-1">{{ listing.created }}</p>
+
+                {% if listing.bid.user is not None %}
+                <p class="small m-0">Last bid by: {{ listing.bid.user }}</p>
+                <p class="small">{{ listing.bid.date }}</p>
+
+                {% endif %}
+                <a href="{% url 'listing' listing.id %}"<button type="submit" class="btn btn-primary">Details</button></a>                       
+            </div>
+        </div>        
+    </div>
+    {% endfor %}
+{% endblock %}
